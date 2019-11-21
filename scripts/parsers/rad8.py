@@ -7,22 +7,39 @@ class Rad8Parse(baseparse.BaseParse):
     def __init__(self, file: str):
         super().__init__(self, file)
 
+        if self.error_code is baseparse.ParseError.PARSE_OK:
+            self.extract() 
+
     def extract(self):
-        re_rxr = re.compile(r'(Hospital[\s]*number:)\s*(RXR(\d){7})')
-        self.extracted['RXR'] = re_rxr.search(self.text).group(2)
+        self._add_extract('RXR', r'(Hospital[\s]*number:)\s*(RXR(\d){7})', 2)
+        self._add_extract('date', r'(Recording date:)[\s]*(\d{1,2}[\\/\.:]\d{1,2}[\\/\.:]\d{2,4})', 2)
+        self._add_extract('dob', r'(Date of birth:)[\s]*(\d{1,2}[\\/\.:]\d{1,2}[\\/\.:]\d{2,4})', 2)
+
+        self._add_extract('odi', r'(ODI)[\s]*(\d{1,3}\.?\d?)', 2)
+        self._add_extract('hri', r'(HRI)[\s]*(\d{1,3}\.?\d?)', 2)
+
         re_name = re.compile(r'(Name:)[\s]*([A-Z][a-z]+)[\s]+([A-Z][a-z]+)')
-        self.extracted['fname'] = re_name.search(self.text).group(2)
-        self.extracted['lname'] = re_name.search(self.text).group(3)
-        re_notes = re.compile(r'Notes:[\s]*([\s\S]+?(?=Report:))')
-        self.extracted['notes'] = re_notes.search(self.text).group(1).rstrip()
-        re_report = re.compile(r'Report:[\s]*([\s\S]+?(?=\n\nSummary))')
-        self.extracted['report'] = re_report.search(self.text).group(1) # Combine with notes?
-        re_dob = re.compile(r'(Date of birth:)[\s]*(\d{1,2}[\\/\.:]\d{1,2}[\\/\.:]\d{2,4})')
-        self.extracted['dob'] = re_dob.search(self.text).group(2)
-        re_odi = re.compile(r'(ODI)[\s]*(\d{1,3}\.?\d?)')
-        self.extracted['odi'] = re_odi.search(self.text).group(2)
-        re_hri = re.compile(r'(HRI)[\s]*(\d{1,3}\.?\d?)')
-        self.extracted['hri'] = re_hri.search(self.text).group(2)
-        re_date = re.compile(r'(Recording date:)[\s]*(\d{1,2}[\\/\.:]\d{1,2}[\\/\.:]\d{2,4})')
-        self.extracted['date'] = re_date.search(self.text).group(2)
+        result = re_name.search(self.text)
+        if result is None:
+            self._log('No name extracted from {0}\n'.format(self.source_file))
+        else:
+            self.extracted['fname'] = result.group(2)
+            self.extracted['lname'] = result.group(3)
+
+        re_notes = re.compile(r'Notes:[\s]*([\s\S]+?(?=Report:))').search(self.text)
+        re_report = re.compile(r'Report:[\s]*([\s\S]+?(?=\n\nSummary))').search(self.text)
+
+        if re_notes is None:
+            if re_report is None:
+                self._log('No notes or report extracted from {0}\n'.format(self.source_file))
+            else:
+                self.extracted['report'] = re_report.search(self.text).group(1)
+        
+        else:
+            if re_report is None:
+                self.extracted['report'] = 'Notes:\n' + re_notes.group(1).rstrip()
+            else:
+                self.extracted['report'] = 'Notes:\n' + re_notes.group(1).rstrip() + \
+                    '\n\nReport:\n' + re_report.group(1)
+
 
