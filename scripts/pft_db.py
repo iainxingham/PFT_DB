@@ -1,9 +1,9 @@
 # Pulmonary function database
 
-import config
+import scripts.config as cfg
 
 def main():
-    config.set_up_logging()
+    cfg.set_up_logging()
 
 if __name__ == '__main__':
     main()
