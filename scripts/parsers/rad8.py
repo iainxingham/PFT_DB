@@ -1,11 +1,11 @@
 # Parse report from Rad-8 generated from R script
 
-import baseparse
+import scripts.parsers.baseparse as baseparse
 import re
 
 class Rad8Parse(baseparse.BaseParse):
     def __init__(self, file: str):
-        super().__init__(self, file)
+        super().__init__(file)
 
         if self.error_code is baseparse.ParseError.PARSE_OK:
             self.extract() 

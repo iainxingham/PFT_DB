@@ -4,6 +4,7 @@ from tika import parser
 from os import path
 from enum import Enum, unique, auto
 import re
+import logging
 
 @unique
 class ParseError(Enum):
@@ -20,6 +21,7 @@ class BaseParse:
             self.error_code = ParseError.PARSE_OK
         else:
             self.error_code = ParseError.PARSE_NO_FILE
+            logging.error('Can\'t read file: {0}'.format(file))
 
     def is_ok(self) -> bool:
         if self.error_code is ParseError.PARSE_OK:
@@ -35,6 +37,10 @@ class BaseParse:
             self.extracted[key] = result.group(group)
 
     def _log(self, msg: str):
-        pass
+        logging.warning(str)
+
+    def get_data(self) -> dict:
+        return self.extracted
+
 
     

@@ -1,11 +1,11 @@
 # Read oximetry - report generated from new device
 
-import baseparse
+import scripts.parsers.baseparse as baseparse
 import re
 
 class NewOxiParse(baseparse.BaseParse):
     def __init__(self, file: str):
-        super().__init__(self, file)
+        super().__init__(file)
 
         if self.error_code is baseparse.ParseError.PARSE_OK:
             self.extract() 
