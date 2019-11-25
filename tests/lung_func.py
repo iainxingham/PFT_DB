@@ -5,7 +5,7 @@ from scripts.parsers.pft import PFTParse
 
 class TestPFT(unittest.TestCase):
 
-    def test_rad8(self):
+    def test_pft(self):
         pft = PFTParse('./test_files/pft1.pdf')
         self.assertTrue(pft.is_ok())
         data = pft.get_data()
@@ -23,3 +23,7 @@ class TestPFT(unittest.TestCase):
 
         self.assertEqual(len(data['VAsb']), 3)
         self.assertEqual(len(data['TLco']), 4)
+
+    def test_badfile(self):
+        bad = PFTParse('./test_files/missing.pdf')
+        self.assertFalse(bad.is_ok())
