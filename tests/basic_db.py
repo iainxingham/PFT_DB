@@ -7,9 +7,10 @@ from scripts.config import PFT_configs
 
 class TestDB(unittest.TestCase):
     def setUp(self):
-        self.cfg = PFT_configs('./test_files/test.log')
+        self.cfg = PFT_configs('./test_files/test.log', \
+                               'sqlite:///.///test_files///test.db')
         self.cfg.set_up_logging()
-        self.cfg.set_up_db('sqlite:///.///test_files///test.db')
+        self.cfg.set_up_db()
         self.cfg.build_new_db()
 
     def testConfig(self):

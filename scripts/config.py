@@ -7,16 +7,18 @@ from sqlalchemy.orm import sessionmaker
 import scripts.database.db as db
 
 class PFT_configs():
-    def __init__(self, logfile: str='pft_db.log'):
+    def __init__(self, logfile: str='./data/pft_db.log',\
+                 dbfile: str='sqlite:///.///data///pfts.db'):
         self.settings = {}
         self.settings['logfile'] = logfile
+        self.settings['dbfile'] = dbfile
 
     def set_up_logging(self):
         logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO, \
                             filename=self.settings['logfile'])
 
-    def set_up_db(self, dbfile: str='sqlite:///test.db'):
-        self.engine = create_engine(dbfile)
+    def set_up_db(self):
+        self.engine = create_engine(self.settings['dbfile'])
         DBSession = sessionmaker(bind=self.engine)
         self.session = DBSession()
 

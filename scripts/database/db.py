@@ -1,6 +1,6 @@
 # Define the database
 
-from sqlalchemy import Column, ForeignKey, Integer, String, Date, Float, Text
+from sqlalchemy import Column, ForeignKey, Integer, String, Date, Float, Text, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -113,4 +113,19 @@ class Lungfunc(Base):
     tlcrv = Column(Float)
     tlcrv_pred = Column(Float)
     tlcrv_percent_pred = Column(Float)
-    tlcrv_SR = Column(Float)   
+    tlcrv_SR = Column(Float)
+
+class Search(Base):
+    __tablename__ = 'search'
+    id = Column(Integer, primary_key = True)
+    search_date = Column(DateTime)
+    sleep_added = Column(Integer)
+    pft_added = Column(Integer)
+
+class Folders(Base):
+    __tablename__ = 'folders'
+    id = Column(Integer, primary_key = True)
+    added = Column(DateTime)
+    folder = Column(String(500))
+    parser = Column(Integer, ForeignKey('record_sources.id'))
+    parser_rel = relationship(Record_sources)

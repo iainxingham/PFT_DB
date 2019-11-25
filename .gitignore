@@ -4,6 +4,9 @@
 # Test files
 test_files/
 
+# Logs and database
+data/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
